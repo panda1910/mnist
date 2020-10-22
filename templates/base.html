@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>{% block title %}{% endblock%}</title>
+    <link rel="icon" href="data:,">
+    <link href="https://fonts.googleapis.com/css2?family=Grandstander:ital,wght@1,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{url_for('static', filename='libraries/p5.js')}}"></script>
+    <script src="{{url_for('static', filename='libraries/jquery.js')}}"></script>
+<!--    <script src="{{url_for('static', filename='libraries/addons/p5.sound.min.js.js')}}"></script>-->
+    {% block script %}{% endblock %}
+
+<!--    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>-->
+<!--    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>-->
+</head>
+<body>
+{% block content %}
+{% endblock %}
+</body>
+</html>

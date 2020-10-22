@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block title %}
+Home Page
+{% endblock %}
+{% block script %}
+<script src="{{url_for('static', filename='sketch.js')}}"></script>
+<script src="{{url_for('static', filename='particle.js')}}"></script>
+{% endblock %}
+
+{% block content %}
+
+
+    <div class="banner">
+        <h1>MNIST Digit Recognition</h1>
+    </div>
+
+    <div class="middle">
+        <div class="canv_holder" id="canv_pos" style="float:left">
+
+        </div>
+        <div style="width: 60%; float:right" id="right_side">
+
+            <div class="data_up">
+                <h1>Instructions: </h1>
+                <ul>
+                  <li>Slowly draw a digit between 0-9 on the canvas.</li>
+                  <li>When you are done with the drawing click on Recognise.</li>
+                  <li>The page will scroll down and predict what the drawn digit could be.</li>
+                </ul>
+                <p>Click on clear to clear out the canvas and try another digit.</p>
+            </div>
+            <div class="data_down">
+                <button class="big-button" id="save_butt" onclick="save_img()">Recognise</button>
+                <button class="" onclick="clear_canvas()">Clear</button>
+            </div>
+
+        </div>
+        <br style="clear:both;"/>
+
+    </div>
+    <div class="bottom" id="display">
+
+        <div class="bot_canv" id="bot_disp">
+
+        </div>
+        <p id="p_tag">Draw a digit</p>
+    </div>
+    <div class="sub_bottom">
+        <img id="graph" src="{{ url_for('static', filename='base_plot.png') }}" alt="graph">
+    </div>
+    <div class="foot">
+        <h3>&#169 Created by Aviral</h3>
+    </div>
+
+
+<script>
+    $("#save_butt").on('click',function() {
+        $('html, body').animate({
+            'scrollTop' : $("#bot_disp").position().top
+        }, 3000);
+    });
+
+    function clear_canvas(){
+        reset();
+    };
+
+    function save_img(){
+        let canvas = document.getElementById("defaultCanvas0")
+        document.getElementById("save_butt").disabled = true;
+        let dataURL = canvas.toDataURL("image/png");
+        dataURL = dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+
+        let entry = {
+            "data" : dataURL
+        };
+
+        let name = window.origin;
+        name += "/data";
+
+
+        fetch(name, {
+
+            method: 'POST',
+            body: JSON.stringify(entry)
+        }).then(function (response) {
+            // At this point, Flask has printed our JSON
+
+            return response.json();
+
+        }).then(function (json) {
+            console.log('POST response: Success');
+
+            let text = json["number"]
+            change(text)
+
+            document.getElementById("save_butt").disabled = false;
+            let pay_load = "Number Recognised: " + text;
+            let p_tag = document.getElementById("p_tag").innerHTML = pay_load + "</br>" + json["predictions"];
+            let filen = "/" + json["link"]
+
+            let graph = document.getElementById("graph").src = "{{ url_for('static', filename="upload" )}}" + filen;
+        });
+    }
+</script>
+{% endblock %}
